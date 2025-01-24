@@ -107,6 +107,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
+    /**
+     * 启用或停用员工
+     * @param status
+     * @param id
+     */
     @Override
     public void startOrStop(Integer status, Long id) {
         Employee build = Employee.builder().status(status).id(id).build();
@@ -114,5 +119,34 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.update(build);
     }
 
+    /**
+     * 根据id查询员工
+     * @param id
+     * @return
+     */
+    @Override
+    public Employee getById(Long id) {
+        Employee employee = employeeMapper.getById(id);
+        //密码脱敏
+        employee.setPassword("****");
+        return employee;
+    }
+
+    /**
+     * 修改员工信息
+     * @param employeeDTO
+     */
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        //属性拷贝
+        BeanUtils.copyProperties(employeeDTO,employee);
+        //设置当前记录的更新时间
+        employee.setUpdateTime(LocalDateTime.now());
+        //设置当前记录修改人id
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        employeeMapper.update(employee);
+    }
 
 }
