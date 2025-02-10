@@ -24,10 +24,10 @@
             <if test="name != null and name != ''">
                 and s.name like concat('%',#{name},'%')
             </if>
-            <if test="categoryId != null and categoryId != ''">
+            <if test="categoryId != null">
                 and s.category_id = #{categoryId}
             </if>
-            <if test="status != null and status != ''">
+            <if test="status != null">
                 and s.status = #{status}
             </if>
         </where>

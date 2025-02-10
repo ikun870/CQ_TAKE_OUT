@@ -16,10 +16,10 @@
             <if test="name != null and name != ''">
                 and d.name like concat('%',#{name},'%')
             </if>
-            <if test="categoryId != null and categoryId != ''">
+            <if test="categoryId != null">
                 and d.category_id = #{categoryId}
             </if>
-            <if test="status != null and status != ''">
+            <if test="status != null">
                 and d.status = #{status}
             </if>
         </where>
@@ -45,10 +45,10 @@
             <if test="image != null and image != ''">
                 image = #{image},
             </if>
-            <if test="categoryId != null and categoryId != ''">
+            <if test="categoryId != null">
                 category_id = #{categoryId},
             </if>
-            <if test="status != null and status != ''">
+            <if test="status != null">
                 status = #{status},
             </if>
             update_time = #{updateTime},
@@ -60,10 +60,10 @@
     <select id="list" parameterType="Dish" resultType="Dish">
         select * from dish
         <where>
-            <if test="categoryId != null and categoryId != ''">
+            <if test="categoryId != null">
                 and category_id = #{categoryId}
             </if>
-            <if test="status != null and status != ''">
+            <if test="status != null">
                 and status = #{status}
             </if>
         </where>
