@@ -56,4 +56,17 @@
         </set>
         where id = #{id}
     </update>
+
+    <select id="list" parameterType="Dish" resultType="Dish">
+        select * from dish
+        <where>
+            <if test="categoryId != null and categoryId != ''">
+                and category_id = #{categoryId}
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
 </mapper>
