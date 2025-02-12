@@ -5,15 +5,19 @@
     <file url="file://$PROJECT_DIR$/sky-pojo/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/controller/admin/CategoryController.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/controller/user/AddressBookController.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/controller/user/CategoryController.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/controller/user/DishController.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/controller/user/SetmealController.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/controller/user/ShopController.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/AddressBookMapper.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/CategoryMapper.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/DishMapper.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/SetmealMapper.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/service/AddressBookService.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/service/CategoryService.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/service/SetmealService.java" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/service/impl/AddressBookServiceImpl.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/service/impl/CategoryServiceImpl.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/service/impl/SetmealServiceImpl.java" charset="GBK" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/resources/application-dev.yml" charset="UTF-8" />
