@@ -1,6 +1,7 @@
 package com.sky.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sky.WebSocketServer.WebSocketServer;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.OrdersPaymentDTO;
@@ -21,8 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -39,6 +39,8 @@ public class OrderServiceImpl implements OrderService {
     private WeChatPayUtil weChatPayUtil;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private WebSocketServer webSocketServer;
     /**
      * 提交订单
      *
@@ -144,5 +146,32 @@ public class OrderServiceImpl implements OrderService {
                 .build();
 
         orderMapper.update(orders);
+
+        //通过webSocket通知商家 type\orderId\content
+        Map map = new HashMap();
+        map.put("type",1 );//1表示来单提醒，2表示催单
+        map.put("orderId", ordersDB.getId());//这是数据库中的订单id
+        map.put("content", "订单号：" + outTradeNo + "，用户已支付，请尽快处理"); //这是订单的number
+        //向webSocket客户端浏览器推送消息
+        String message = JSONObject.toJSONString(map);
+        webSocketServer.sendToAllClient(message);
+    }
+
+    @Override
+    public void reminder(Long orderId) {
+        // 根据订单id查询订单
+        Orders order = orderMapper.getById(orderId);
+
+        if (order == null) {
+            throw new OrderBusinessException("订单不存在");
+        }
+        //通过webSocket通知商家 type\orderId\content
+        Map map = new HashMap();
+        map.put("type",2 );//1表示来单提醒，2表示催单
+        map.put("orderId", orderId);//这是数据库中的订单id
+        map.put("content", "订单号："+order.getNumber()+"用户催单，请尽快处理"); //这是前端生成的订单号
+
+        String message = JSONObject.toJSONString(map);
+        webSocketServer.sendToAllClient(message);
     }
 }

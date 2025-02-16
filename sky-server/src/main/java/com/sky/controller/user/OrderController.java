@@ -46,4 +46,15 @@ public class OrderController {
         log.info("生成预支付交易单：{}", orderPaymentVO);
         return Result.success(orderPaymentVO);
     }
+
+    /**
+     * 客户催单
+     * @param orderId
+     */
+    @PutMapping("/reminder/{orderId}")
+    @ApiOperation("客户催单")
+    public Result reminder(@PathVariable("orderId") Long orderId) {
+        orderService.reminder(orderId);
+        return Result.success();
+    }
 }

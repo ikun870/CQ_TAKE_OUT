@@ -24,6 +24,13 @@ public interface OrderMapper {
     Orders getByNumber(String orderNumber);
 
     /**
+     * 根据订单id查询订单
+     * @param id
+     */
+    @Select("select * from orders where id = #{id}")
+    Orders getById(Long id);
+
+    /**
      * 修改订单信息
      * @param orders
      */
