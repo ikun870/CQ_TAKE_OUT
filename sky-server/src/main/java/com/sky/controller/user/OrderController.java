@@ -42,7 +42,14 @@ public class OrderController {
     @ApiOperation("订单支付")
     public Result<OrderPaymentVO> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO) throws Exception {
         log.info("订单支付：{}", ordersPaymentDTO);
+        /**
+         * TODO
+         * 这里没有办法完成支付，所以直接返回一个空的 OrderPaymentVO,并完成支付成功的逻辑
+         * 这里也只是为了测试
         OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
+         */
+        orderService.paySuccess(ordersPaymentDTO.getOrderNumber());
+        OrderPaymentVO orderPaymentVO = new OrderPaymentVO();
         log.info("生成预支付交易单：{}", orderPaymentVO);
         return Result.success(orderPaymentVO);
     }
@@ -51,6 +58,7 @@ public class OrderController {
      * 客户催单
      * @param orderId
      */
+    //TODO 待测
     @PutMapping("/reminder/{orderId}")
     @ApiOperation("客户催单")
     public Result reminder(@PathVariable("orderId") Long orderId) {
