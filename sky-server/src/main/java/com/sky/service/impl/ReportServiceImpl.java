@@ -5,17 +5,21 @@ import com.sky.entity.Orders;
 import com.sky.mapper.OrderMapper;
 import com.sky.mapper.UserMapper;
 import com.sky.service.ReportService;
-import com.sky.vo.OrderReportVO;
-import com.sky.vo.SalesTop10ReportVO;
-import com.sky.vo.TurnoverReportVO;
-import com.sky.vo.UserReportVO;
+import com.sky.service.WorkspaceService;
+import com.sky.vo.*;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.util.StringUtil;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -32,6 +36,8 @@ public class ReportServiceImpl implements ReportService {
     private OrderMapper orderMapper;
     @Autowired
     private UserMapper  userMapper;
+    @Autowired
+    private WorkspaceService workspaceService;
 
     /**
      * 营业额统计
@@ -195,5 +201,54 @@ public class ReportServiceImpl implements ReportService {
                 .nameList(nameList)
                 .numberList(numberList)
                 .build();
+    }
+
+    /**
+     * 导出报表
+     * @param response
+     */
+    @Override
+    public void export(HttpServletResponse response) {
+        //1.查询数据--最近30天的营业数据
+        //开始时间,精确到当天的00:00:00
+        LocalDateTime begin = LocalDateTime.of(LocalDate.now().minusDays(30), LocalTime.MIN);
+        //结束时间,精确到当天的23:59:59
+        LocalDateTime end = LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.MAX);
+        BusinessDataVO businessDataVO = workspaceService.getBusinessData(begin, end);
+        //2.写入Excel
+        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("template/运营数据报表模板.xlsx");
+        try {
+            XSSFWorkbook excel = new XSSFWorkbook(resourceAsStream);
+            XSSFSheet sheet = excel.getSheetAt(0);
+            sheet.getRow(1).getCell(1).setCellValue("时间："+begin.toLocalDate()+"-"+end.toLocalDate());
+
+            sheet.getRow(3).getCell(2).setCellValue(businessDataVO.getTurnover());
+            sheet.getRow(3).getCell(4).setCellValue(businessDataVO.getOrderCompletionRate());
+            sheet.getRow(3).getCell(6).setCellValue(businessDataVO.getNewUsers());
+            sheet.getRow(4).getCell(2).setCellValue(businessDataVO.getValidOrderCount());
+            sheet.getRow(4).getCell(4).setCellValue(businessDataVO.getUnitPrice());
+
+            for(int i = 0; i < 30; i++){
+                LocalDate time = begin.plusDays(i).toLocalDate();
+                //查询每一天的营业数据
+                BusinessDataVO businessData = workspaceService.getBusinessData(LocalDateTime.of(time, LocalTime.MIN), LocalDateTime.of(time, LocalTime.MAX));
+                sheet.getRow(7+i).getCell(1).setCellValue(time.toString());
+                sheet.getRow(7+i).getCell(2).setCellValue(businessData.getTurnover());
+                sheet.getRow(7+i).getCell(3).setCellValue(businessData.getValidOrderCount());
+                sheet.getRow(7+i).getCell(4).setCellValue(businessData.getOrderCompletionRate());
+                sheet.getRow(7+i).getCell(5).setCellValue(businessData.getUnitPrice());
+                sheet.getRow(7+i).getCell(6).setCellValue(businessData.getNewUsers());
+            }
+            //3.通过输出流，下载到浏览器
+            ServletOutputStream outputStream = response.getOutputStream();
+            excel.write(outputStream);
+
+            //4.关闭资源
+            excel.close();
+            outputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
